@@ -7,5 +7,5 @@ require github.com/DataDog/gopsutil v1.2.1
 require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
-	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
+	golang.org/x/sys v0.0.0-20221013171732-95e765b1cc43 // indirect
 )
