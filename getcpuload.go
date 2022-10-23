@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"math"
@@ -9,9 +10,12 @@ import (
 	"github.com/DataDog/gopsutil/cpu"
 )
 
-const refresh_time = 3 * time.Second
+var secs = flag.Int("r", 3, "refresh time (seconds)")
 
 func main() {
+	flag.Parse()
+	refresh_time := time.Duration(*secs) * time.Second
+
 	for {
 		cpuPercents, err := cpu.Percent(refresh_time, false)
 		if err != nil {
