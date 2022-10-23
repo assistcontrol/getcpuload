@@ -16,13 +16,20 @@ func main() {
 	flag.Parse()
 	refresh_time := time.Duration(*secs) * time.Second
 
-	for {
-		cpuPercents, err := cpu.Percent(refresh_time, false)
-		if err != nil {
-			log.Fatalln("Cannot get CPU percentage:", err)
-		}
+	// Show an initial result quickly
+	fmt.Println(cpuPercent(1 * time.Second))
 
-		percent := int(math.Round(cpuPercents[0]))
-		fmt.Printf("%d%%\n", percent)
+	for {
+		fmt.Println(cpuPercent(refresh_time))
 	}
+}
+
+func cpuPercent(refresh_time time.Duration) string {
+	cpuPercents, err := cpu.Percent(refresh_time, false)
+	if err != nil {
+		log.Fatalln("Cannot get CPU percentage:", err)
+	}
+
+	percent := int(math.Round(cpuPercents[0]))
+	return fmt.Sprintf("%d%%", percent)
 }
