@@ -2,7 +2,7 @@ module github.com/assistcontrol/getcpuload
 
 go 1.19
 
-require github.com/DataDog/gopsutil v1.2.1
+require github.com/DataDog/gopsutil v1.2.2
 
 require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
