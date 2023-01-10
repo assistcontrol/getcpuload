@@ -10,22 +10,22 @@ import (
 	"github.com/DataDog/gopsutil/cpu"
 )
 
-var secs = flag.Int("r", 3, "refresh time (seconds)")
-
 func main() {
+	secs := flag.Int("r", 3, "refresh time (seconds)")
 	flag.Parse()
-	refresh_time := time.Duration(*secs) * time.Second
+
+	refreshTime := time.Duration(*secs) * time.Second
 
 	// Show an initial result quickly
 	fmt.Println(cpuPercent(1 * time.Second))
 
 	for {
-		fmt.Println(cpuPercent(refresh_time))
+		fmt.Println(cpuPercent(refreshTime))
 	}
 }
 
-func cpuPercent(refresh_time time.Duration) string {
-	cpuPercents, err := cpu.Percent(refresh_time, false)
+func cpuPercent(refreshTime time.Duration) string {
+	cpuPercents, err := cpu.Percent(refreshTime, false)
 	if err != nil {
 		log.Fatalln("Cannot get CPU percentage:", err)
 	}
