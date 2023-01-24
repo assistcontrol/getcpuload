@@ -7,7 +7,7 @@ import (
 	"math"
 	"time"
 
-	"github.com/DataDog/gopsutil/cpu"
+	"github.com/shirou/gopsutil/v3/cpu"
 )
 
 func main() {
