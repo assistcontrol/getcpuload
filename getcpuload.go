@@ -1,30 +1,33 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"math"
 	"time"
 
+	"github.com/mackerelio/go-osstat/memory"
 	"github.com/shirou/gopsutil/v3/cpu"
 )
 
+const REFRESH_TIME = 3 * time.Second
+
 func main() {
-	secs := flag.Int("r", 3, "refresh time (seconds)")
-	flag.Parse()
-
-	refreshTime := time.Duration(*secs) * time.Second
-
 	// Show an initial result quickly
-	fmt.Println(cpuPercent(1 * time.Second))
+	fmt.Println(get(1 * time.Second))
 
 	for {
-		fmt.Println(cpuPercent(refreshTime))
+		fmt.Println(get(REFRESH_TIME))
 	}
 }
 
-func cpuPercent(refreshTime time.Duration) string {
+func get(refreshTime time.Duration) string {
+	curCPU := getCPU(refreshTime)
+	curMem := getMem()
+	return fmt.Sprintf("%s %s", curCPU, curMem)
+}
+
+func getCPU(refreshTime time.Duration) string {
 	cpuPercents, err := cpu.Percent(refreshTime, false)
 	if err != nil {
 		log.Fatalln("Cannot get CPU percentage:", err)
@@ -32,4 +35,17 @@ func cpuPercent(refreshTime time.Duration) string {
 
 	percent := int(math.Round(cpuPercents[0]))
 	return fmt.Sprintf("%d%%", percent)
+}
+
+func getMem() string {
+	mem, _ := memory.Get()
+
+	used := bytesToGB(mem.Used)
+	usedPercent := int(math.Round(float64(mem.Used) / float64(mem.Total) * 100))
+
+	return fmt.Sprintf("%d%%(%dG)", usedPercent, used)
+}
+
+func bytesToGB(bytes uint64) int {
+	return int(math.Round(float64(bytes) / 1024 / 1024 / 1024))
 }
