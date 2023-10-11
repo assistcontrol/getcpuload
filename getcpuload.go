@@ -12,7 +12,15 @@ import (
 
 const REFRESH_TIME = 3 * time.Second
 
+var MEM_TOTAL = 0.0
+
 func main() {
+	mem, err := memory.Get()
+	if err != nil {
+		log.Fatal(err)
+	}
+	MEM_TOTAL = float64(mem.Total)
+
 	// Show an initial result quickly
 	fmt.Println(get(1 * time.Second))
 
@@ -38,12 +46,15 @@ func getCPU(refreshTime time.Duration) string {
 }
 
 func getMem() string {
-	mem, _ := memory.Get()
+	mem, err := memory.Get()
+	if err != nil {
+		return ""
+	}
 
-	used := bytesToGB(mem.Used)
-	usedPercent := int(math.Round(float64(mem.Used) / float64(mem.Total) * 100))
+	used := mem.Used
+	usedPercent := int(math.Round(float64(used) / MEM_TOTAL * 100))
 
-	return fmt.Sprintf("%d%%(%dG)", usedPercent, used)
+	return fmt.Sprintf("%d%%(%dG)", usedPercent, bytesToGB(used))
 }
 
 func bytesToGB(bytes uint64) int {
