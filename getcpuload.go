@@ -6,21 +6,11 @@ import (
 	"math"
 	"time"
 
-	"github.com/mackerelio/go-osstat/memory"
 	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v3/mem"
 )
 
 const REFRESH_TIME = 3 * time.Second
-
-var MEM_TOTAL = 0.0
-
-func init() {
-	mem, err := memory.Get()
-	if err != nil {
-		log.Fatal(err)
-	}
-	MEM_TOTAL = float64(mem.Total)
-}
 
 func main() {
 	// Show an initial result quickly
@@ -38,27 +28,28 @@ func get(refreshTime time.Duration) string {
 }
 
 func getCPU(refreshTime time.Duration) string {
-	cpuPercents, err := cpu.Percent(refreshTime, false)
+	c, err := cpu.Percent(refreshTime, false)
 	if err != nil {
 		log.Fatalln("Cannot get CPU percentage:", err)
 	}
 
-	percent := int(math.Round(cpuPercents[0]))
-	return fmt.Sprintf("%d%%", percent)
+	return percentString(c[0])
 }
 
 func getMem() string {
-	mem, err := memory.Get()
+	m, err := mem.VirtualMemory()
 	if err != nil {
 		log.Fatalln("Cannot get memory info:", err)
 	}
 
-	used := mem.Used
-	usedPercent := int(math.Round(float64(used) / MEM_TOTAL * 100))
-
-	return fmt.Sprintf("%d%%(%dG)", usedPercent, bytesToGB(used))
+	return fmt.Sprintf("%s(%dG)", percentString(m.UsedPercent), bytesToGB(m.Used))
 }
 
-func bytesToGB(bytes uint64) int {
-	return int(math.Round(float64(bytes) / 1024 / 1024 / 1024))
+func bytesToGB(b uint64) int {
+	return int(math.Round(float64(b) / 1024 / 1024 / 1024))
+}
+
+// Returns a string with a rounded integer and a percent sign
+func percentString(f float64) string {
+	return fmt.Sprintf("%d%%", int(math.Round(f)))
 }
