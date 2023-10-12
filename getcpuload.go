@@ -14,13 +14,15 @@ const REFRESH_TIME = 3 * time.Second
 
 var MEM_TOTAL = 0.0
 
-func main() {
+func init() {
 	mem, err := memory.Get()
 	if err != nil {
 		log.Fatal(err)
 	}
 	MEM_TOTAL = float64(mem.Total)
+}
 
+func main() {
 	// Show an initial result quickly
 	fmt.Println(get(1 * time.Second))
 
@@ -48,7 +50,7 @@ func getCPU(refreshTime time.Duration) string {
 func getMem() string {
 	mem, err := memory.Get()
 	if err != nil {
-		return ""
+		log.Fatalln("Cannot get memory info:", err)
 	}
 
 	used := mem.Used
