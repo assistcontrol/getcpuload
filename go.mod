@@ -2,7 +2,7 @@ module github.com/assistcontrol/getcpuload
 
 go 1.21
 
-require github.com/shirou/gopsutil/v3 v3.23.9
+require github.com/shirou/gopsutil/v3 v3.23.10
 
 require (
 	github.com/go-ole/go-ole v1.3.0 // indirect
